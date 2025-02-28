@@ -1,0 +1,16 @@
+*-data
+node_modules/
+dist/
+*.log
+.DS_Store
+__pycache__/
+__init__.py
+*-dev.*
+venv
+*.pyc
+*.pyo
+*.pyd
+.env
+.git
+node_modules/
+venv/
