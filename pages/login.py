@@ -1,15 +1,23 @@
 import time
-import requests
 import base64
 from io import BytesIO
 import streamlit as st
 from infra.auth import generate_qr_code, generate_code, login
+from infra.cripto import decrypt_with_rsa
+from infra.config import Config as config
+from infra.redis import RedisInMemory
 
 def get_image_base64(image_bytesio):
     """Converte um BytesIO em uma string base64"""
     return base64.b64encode(image_bytesio.getvalue()).decode("utf-8")
 
 def login_page():
+    code = st.query_params.get("code", None)
+    if code:
+        code = decrypt_with_rsa(code, config.PRIVATE_KEY).split(':')
+        redis = RedisInMemory()
+        redis.set(code[0], code[1])
+
     c = st.columns([35, 30, 35])
     with c[0]:
         st.markdown(
@@ -65,15 +73,11 @@ def login_page():
         st.rerun()
 
 def trigger(code: str) -> str | None:
-    # url ="http://lalaland.com"
-    # temp = requests.post(url, json={"code": code})
-
-    # if temp.status_code == 200:
-    #     res = temp.json()
-    # else:
-    #     res = None
-
-    res = None
+    try:
+        redis = RedisInMemory()
+        res = redis.get(code)
+    except:
+        res = None
 
     if res:
         return res.get("installation_id", None)
