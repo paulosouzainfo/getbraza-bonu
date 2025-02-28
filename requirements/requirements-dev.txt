@@ -1,8 +1,0 @@
--r requirements.txt  # importa as dependências de produção
-pre-commit
-ruff
-mypy
-types-setuptools
-bandit
-pytest
-pytest-cov
