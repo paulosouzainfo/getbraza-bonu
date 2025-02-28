@@ -1,7 +1,13 @@
 import time
 import requests
+import base64
+from io import BytesIO
 import streamlit as st
 from infra.auth import generate_qr_code, generate_code, login
+
+def get_image_base64(image_bytesio):
+    """Converte um BytesIO em uma string base64"""
+    return base64.b64encode(image_bytesio.getvalue()).decode("utf-8")
 
 def login_page():
     c = st.columns([35, 30, 35])
@@ -11,12 +17,16 @@ def login_page():
             unsafe_allow_html=True,
         )
         code = generate_code()
+        qr_image = generate_qr_code(code)
+        qr_base64 = get_image_base64(qr_image)
         st.markdown(
-            '<div style="display: flex; justify-content: center;">',
+            f"""
+            <div style="display: flex; justify-content: center;">
+                <img src="data:image/png;base64,{qr_base64}" width="200">
+            </div>
+            """,
             unsafe_allow_html=True
         )
-        st.image(generate_qr_code(code))
-        st.markdown('</div>', unsafe_allow_html=True)
         st.markdown(
             f'<h5 style="text-align: center;">{code.split(":")[1][:3]}-{code.split(":")[1][3:]}</h5>',
             unsafe_allow_html=True
