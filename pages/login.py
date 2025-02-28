@@ -11,11 +11,28 @@ def get_image_base64(image_bytesio):
 
 def login_page():
     c = st.columns([35, 30, 35])
-    with c[1]:
+    with c[0]:
         st.markdown(
-            f'<h4 style="text-align: center;">Escaneie com seu aplicativo getBRAZA</h4>',
-            unsafe_allow_html=True,
+            """
+            <style>
+                ol li::marker {
+                    font-weight: bold;
+                }
+            </style>
+            <div></br>
+                <p style="text-align: justify; font-weight: bold;">
+                Use o seu aplicativo para poder acessar suas informações através do seu navegador
+                </p>
+                <ol>
+                    <li>Abra seu aplicativo getBRAZA;</li>
+                    <li>Clique em <b>"AJUSTES"</b>;</li>
+                    <li>Em <b>"CONECTAR DISPOSITIVOS"</b>, clique em <b>"ESCANEAR"</b> e aponte a câmera do seu celular para o código QR que aparece ao lado.</li>
+                </ol>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
+    with c[1]:
         code = generate_code()
         qr_image = generate_qr_code(code)
         qr_base64 = get_image_base64(qr_image)
@@ -27,10 +44,10 @@ def login_page():
             """,
             unsafe_allow_html=True
         )
-        st.markdown(
-            f'<h5 style="text-align: center;">{code.split(":")[1][:3]}-{code.split(":")[1][3:]}</h5>',
-            unsafe_allow_html=True
-        )
+    st.markdown(
+        f'<h5 style="text-align: center;">{code.split(":")[1][:3]}-{code.split(":")[1][3:]}</h5>',
+        unsafe_allow_html=True
+    )
     contador = 0
     while True:
         installation_id = trigger(code)
