@@ -9,6 +9,7 @@ def decrypt_with_rsa(encrypted_message, private_key_pem):
         private_key_pem.encode(),
         password=None
     )
+
     encrypted_bytes = base64.b64decode(encrypted_message)
     decrypted_message = private_key.decrypt(
         encrypted_bytes,
