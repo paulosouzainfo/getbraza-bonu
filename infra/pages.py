@@ -12,9 +12,10 @@ class Pages:
         page_list = []
         if "account" in st.session_state:
             page_list.append(st.Page(extrato, title="Extrato"))
+
         else:
             page_list.append(st.Page(login_page, title="Login"))
             page_list.append(st.Page(healthcheck, title="Healthcheck", url_path="healthz"))
 
-        pg = st.navigation(page_list)
+        pg = st.navigation(page_list, position='hidden')
         pg.run()
