@@ -14,8 +14,10 @@ def get_image_base64(image_bytesio):
 def login_page():
     code = st.query_params.get("code", None)
     if code:
-        code = decrypt_with_rsa(code, config.PRIVATE_KEY).split(':')
+        code = decrypt_with_rsa(code, config.PRIVATE_KEY)
+        st.write(code)
         redis = RedisInMemory()
+        code = code.split(':')
         redis.set(code[0], code[1])
 
     c = st.columns([35, 30, 35])

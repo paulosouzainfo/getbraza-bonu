@@ -9,7 +9,9 @@ class Config:
     DEVICE_ENDPOINT = getenv("DEVICE_ENDPOINT")
     STATEMENT_ENDPOINT = getenv("STATEMENT_ENDPOINT")
     COINS_ENDPOINT = getenv("COINS_ENDPOINT")
-    PRIVATE_KEY = getenv("PRIVATE_KEY")
+    # PRIVATE_KEY = getenv("PRIVATE_KEY")
+    with open('getbraza.pem', 'r') as r:
+        PRIVATE_KEY = r.read()
 
     @staticmethod
     def initial_config():
