@@ -46,9 +46,11 @@ def trigger(code: str) -> str | None:
     # else:
     #     res = None
 
-    res = {
-        "installation_id": "e133275fff6e46d6"
-    }
+    # res = {
+    #     "installation_id": "e133275fff6e46d6"
+    # }
+
+    res = None
 
     if res:
         return res.get("installation_id", None)
