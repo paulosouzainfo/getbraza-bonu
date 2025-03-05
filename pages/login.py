@@ -15,11 +15,11 @@ def get_image_base64(image_bytesio):
 def login_page():
     code = st.query_params.get("code", None)
     message = st.query_params.get("message", None)
-    if code:
-        code = decrypt_string(encrypted_text=message, key_md5=code)
+    if code and message:
+        message = decrypt_string(encrypted_text=message, key_md5=code)
         cache = DictCache()
-        message = message.split(':')
-        cache.save(message[0], ':'.join(message[1:]))
+        messages = message.split(':')
+        cache.save(messages[0], ":".join(messages[1:]))
 
     c = st.columns([35, 30, 35])
     with c[0]:
@@ -78,7 +78,7 @@ def login_page():
 def trigger(code: str) -> str | None:
     try:
         cache = DictCache()
-        res = cache.get(code)
+        res = cache.get(f"Braza{code}")
     except:
         res = None
 

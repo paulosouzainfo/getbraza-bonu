@@ -19,7 +19,14 @@ class DictCache:
             raise ValueError("A chave deve ser uma string.")
         if not isinstance(value, str):
             raise ValueError("O valor deve ser um dicionário.")
-        self.cache[key] = value
+        values = value.split(":")
+        dicio = {
+            'installation_id': values[0],
+            'account_number': values[1],
+            'pubkey': values[2],
+            'certified_account': {"false": False, "true": True}.get(values[3])
+        }
+        st.write(dicio)
     
     def get(self, key: str):
         """
