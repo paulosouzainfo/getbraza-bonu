@@ -77,6 +77,7 @@ def trigger(code: str) -> None:
     code = f"Braza{code}"
     try:
         res = cache.get(code)
+        st.info(res)
         if res:
             st.session_state["account"] = res
             return True
