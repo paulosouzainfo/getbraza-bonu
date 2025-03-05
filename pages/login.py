@@ -1,11 +1,12 @@
 import time
+import hashlib
 import base64
 from io import BytesIO
 import streamlit as st
 from infra.auth import generate_qr_code, generate_code, login
 from infra.cripto import decrypt_with_rsa
 from infra.config import Config as config
-from infra.redis import RedisInMemory
+from infra.cachetools import DictCache
 
 def get_image_base64(image_bytesio):
     """Converte um BytesIO em uma string base64"""
@@ -14,11 +15,11 @@ def get_image_base64(image_bytesio):
 def login_page():
     code = st.query_params.get("code", None)
     if code:
-        code = decrypt_with_rsa(code, config.PRIVATE_KEY)
+        code = decrypt_with_rsa(code, hashlib.md5(code.encode()).hexdigest())
         st.write(code)
-        redis = RedisInMemory()
+        cache = DictCache()
         code = code.split(':')
-        redis.set(code[0], code[1])
+        cache.set(code[0], ':'.join(code[1:]))
 
     c = st.columns([35, 30, 35])
     with c[0]:
@@ -76,8 +77,8 @@ def login_page():
 
 def trigger(code: str) -> str | None:
     try:
-        redis = RedisInMemory()
-        res = redis.get(code)
+        cache = DictCache()
+        res = cache.get(code)
     except:
         res = None
 
