@@ -54,5 +54,4 @@ class DictCache:
         if data:
             return json.loads(data)
         else:
-            st.warning(f"Chave '{key}' não encontrada no Redis!")
             return None
