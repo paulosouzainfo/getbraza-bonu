@@ -1,13 +1,13 @@
 import time
-import hashlib
 import base64
 from io import BytesIO
 import streamlit as st
 from infra.auth import generate_qr_code, generate_code
 from infra.cripto import decrypt_string
-from infra.config import Config as config
-from infra.cachetools import DictCache
+from infra.redis import DictCache
+from schemas.person import Person
 
+cache = DictCache()
 def get_image_base64(image_bytesio):
     """Converte um BytesIO em uma string base64"""
     return base64.b64encode(image_bytesio.getvalue()).decode("utf-8")
@@ -17,8 +17,8 @@ def login_page():
     message = st.query_params.get("message", None)
     if code and message:
         message = decrypt_string(encrypted_text=message, key_md5=code)
-        cache = DictCache()
         messages = message.split(':')
+        chave = messages[0]
         cache.save(messages[0], ":".join(messages[1:]))
 
     c = st.columns([35, 30, 35])
@@ -74,8 +74,10 @@ def login_page():
         st.rerun()
 
 def trigger(code: str) -> None:
+    code = f"Braza{code}"
     try:
-        cache = DictCache()
-        st.session_state["account"] = cache.get(f"Braza{code}")
+        res = cache.get(code)
+        st.session_state["account"] = res
+        return True
     except:
-        st.info("Aguardando confirmação no Aplicativo")
+        return False

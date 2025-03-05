@@ -25,9 +25,9 @@ def make_transfer():
 
     if transfer_form:
         temp = getbraza(
-            application_id=st.session_state["account"].application_id,
-            api_key=st.session_state["account"].pubkey,
-            account_number=st.session_state["account"].account_number
+            application_id=st.session_state["account"].get('application_id'),
+            api_key=st.session_state["account"].get('pubkey'),
+            account_number=st.session_state["account"].get('account_number')
         )
         transfer_data = {
             "to_account_number": account_number,

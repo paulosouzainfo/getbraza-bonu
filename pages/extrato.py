@@ -7,7 +7,7 @@ from infra.config import Config as config
 
 
 def extrato():
-    st.subheader(f"CONTA: {st.session_state['account'].account_number}")
+    st.subheader(f"CONTA: {st.session_state['account'].get('account_number')}")
     st.markdown("---")
 
     try:
