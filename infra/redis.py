@@ -10,7 +10,7 @@ class DictCache:
         :param ttl: Tempo de expiração dos dados em segundos (padrão: 30s).
         """
         self.ttl = ttl
-        self.conn = sqlite3.connect('ddb.db', check_same_thread=False)
+        self.conn = sqlite3.connect(':memory:', check_same_thread=False)
         self.cursor = self.conn.cursor()
         self.cursor.execute("""
             CREATE TABLE cache (
