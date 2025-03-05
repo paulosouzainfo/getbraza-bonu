@@ -3,7 +3,7 @@ import hashlib
 import base64
 from io import BytesIO
 import streamlit as st
-from infra.auth import generate_qr_code, generate_code, login
+from infra.auth import generate_qr_code, generate_code
 from infra.cripto import decrypt_string
 from infra.config import Config as config
 from infra.cachetools import DictCache
@@ -61,10 +61,8 @@ def login_page():
     )
     contador = 0
     while True:
-        installation_id = trigger(code)
-        if installation_id:
+        if trigger(code):
             with st.spinner("Carregando dados da conta"):
-                login(installation_id)
                 break
         time.sleep(1)
         contador += 1
@@ -75,14 +73,9 @@ def login_page():
     if "account" in st.session_state:
         st.rerun()
 
-def trigger(code: str) -> str | None:
+def trigger(code: str) -> None:
     try:
         cache = DictCache()
-        res = cache.get(f"Braza{code}")
+        st.session_state["account"] = cache.get(f"Braza{code}")
     except:
-        res = None
-
-    if res:
-        return res.get("installation_id", None)
-    else:
-        return None
+        st.info("Aguardando confirmação no Aplicativo")
