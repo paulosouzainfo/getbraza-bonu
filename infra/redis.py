@@ -1,20 +1,28 @@
 import json
-import fakeredis
+import sqlite3
 import streamlit as st
 
 class DictCache:
     def __init__(self, ttl=30):
         """
-        Inicializa um Redis fake que roda somente em memória.
+        Inicializa um banco de dados SQLite em memória.
         
         :param ttl: Tempo de expiração dos dados em segundos (padrão: 30s).
         """
-        self.client = fakeredis.FakeRedis(decode_responses=True)  # Aqui, altere para conectar-se a um Redis real
         self.ttl = ttl
+        self.conn = sqlite3.connect(':memory:', check_same_thread=False)
+        self.cursor = self.conn.cursor()
+        self.cursor.execute("""
+            CREATE TABLE cache (
+                key TEXT PRIMARY KEY,
+                data TEXT,
+                ttl INTEGER
+            )
+        """)
     
     def save(self, key: str, value: str):
         """
-        Salva um dicionário no cache Redis e exibe um feedback no Streamlit.
+        Salva um dicionário no cache SQLite em memória.
         
         :param key: Chave do cache.
         :param value: String formatada como "installation_id:account_number:pubkey:certified_account".
@@ -35,23 +43,22 @@ class DictCache:
             'certified_account': values[3].lower() == "true"
         }
 
-        try:
-            key = key.replace('-', '')
-            # Salva no Redis e define TTL
-            self.client.setex(key, self.ttl, json.dumps(dicio))
-        except Exception as e:
-            pass
+        self.cursor.execute("""
+            INSERT OR REPLACE INTO cache (key, data, ttl) 
+            VALUES (?, ?, ?)
+        """, (key, json.dumps(dicio), self.ttl))
+        self.conn.commit()
 
     def get(self, key: str):
         """
-        Obtém um dicionário do cache Redis.
+        Obtém um dicionário do cache SQLite em memória.
         
         :param key: Chave do cache.
         :return: O dicionário armazenado ou None se não existir.
         """
-        # Obtém o valor do Redis
-        data = self.client.get(key)
-        if data:
-            return json.loads(data)
+        self.cursor.execute("SELECT data FROM cache WHERE key=?", (key,))
+        result = self.cursor.fetchone()
+        if result:
+            return json.loads(result[0])
         else:
             return None
