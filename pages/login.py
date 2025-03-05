@@ -19,6 +19,7 @@ def login_page():
         message = decrypt_string(encrypted_text=message, key_md5=code)
         messages = message.split(':')
         chave = messages[0]
+        st.info(chave)
         cache.save(messages[0], ":".join(messages[1:]))
 
     c = st.columns([35, 30, 35])
@@ -78,6 +79,7 @@ def trigger(code: str) -> None:
     try:
         res = cache.get(code)
         if res:
+            st.session_state["account"] = res
             return True
         else:
             return False
