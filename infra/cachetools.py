@@ -26,7 +26,6 @@ class DictCache:
             'pubkey': values[2],
             'certified_account': {"false": False, "true": True}.get(values[3])
         }
-        st.write(dicio)
     
     def get(self, key: str):
         """
