@@ -4,7 +4,7 @@ import base64
 from io import BytesIO
 import streamlit as st
 from infra.auth import generate_qr_code, generate_code, login
-from infra.cripto import decrypt_with_rsa
+from infra.cripto import decrypt_string
 from infra.config import Config as config
 from infra.cachetools import DictCache
 
@@ -14,12 +14,12 @@ def get_image_base64(image_bytesio):
 
 def login_page():
     code = st.query_params.get("code", None)
+    message = st.query_params.get("message", None)
     if code:
-        code = decrypt_with_rsa(code, hashlib.md5(code.encode()).hexdigest())
-        st.write(code)
+        code = decrypt_string(encrypted_text=message, key_md5=code)
         cache = DictCache()
-        code = code.split(':')
-        cache.set(code[0], ':'.join(code[1:]))
+        message = message.split(':')
+        cache.save(message[0], ':'.join(message[1:]))
 
     c = st.columns([35, 30, 35])
     with c[0]:
