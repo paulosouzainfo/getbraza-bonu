@@ -77,7 +77,6 @@ def trigger(code: str) -> None:
     code = f"Braza{code}"
     try:
         res = cache.get(code)
-        st.info(res)
         if res:
             return True
         else:
