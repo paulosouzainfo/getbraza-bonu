@@ -29,6 +29,8 @@ class DictCache:
         :param key: Chave do cache.
         :param value: String formatada como "installation_id:account_number:pubkey:certified_account".
         """
+        import streamlit as st
+        st.info(key)
         if not isinstance(key, str):
             raise ValueError("A chave deve ser uma string.")
         if not isinstance(value, str):
