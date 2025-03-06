@@ -73,6 +73,7 @@ def login_page():
 
 def trigger(code: str) -> None:
     code = code.split(':')[1]
+    code = 'BO00Q9'
     try:
         cache = DictCache()
         res = cache.get(code)
