@@ -72,7 +72,6 @@ def login_page():
         st.rerun()
 
 def trigger(code: str) -> None:
-    code = '123X12'
     code = f"Braza{code}"
     try:
         cache = DictCache()
