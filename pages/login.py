@@ -73,7 +73,6 @@ def login_page():
 
 def trigger(code: str) -> None:
     code = code.split(':')[1]
-    st.info(code)
     try:
         cache = DictCache()
         res = cache.get(code)
