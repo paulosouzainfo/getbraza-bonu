@@ -2,7 +2,6 @@ import time
 import base64
 import streamlit as st
 from infra.auth import generate_qr_code, generate_code
-from infra.cripto import decrypt_string
 from infra.redis import DictCache
 
 def get_image_base64(image_bytesio):
@@ -10,15 +9,6 @@ def get_image_base64(image_bytesio):
     return base64.b64encode(image_bytesio.getvalue()).decode("utf-8")
 
 def login_page():
-    code = st.query_params.get("code", None)
-    message = st.query_params.get("message", None)
-    if code and message:
-        message = decrypt_string(encrypted_text=message, key=code)
-        messages = message.split(':')
-        chave = messages[0]
-        cache = DictCache()
-        cache.save(messages[0], ":".join(messages[1:]))
-
     c = st.columns([35, 30, 35])
     with c[0]:
         st.markdown(
@@ -74,6 +64,7 @@ def login_page():
 def trigger(code: str) -> None:
     code = code.split(':')[1]
     code = 'BO00Q9'
+    st.info(code)
     try:
         cache = DictCache()
         res = cache.get(code)
