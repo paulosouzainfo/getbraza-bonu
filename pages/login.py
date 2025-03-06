@@ -16,7 +16,6 @@ def login_page():
         message = decrypt_string(encrypted_text=message, key_md5=code)
         messages = message.split(':')
         chave = messages[0]
-        st.info(chave)
         cache = DictCache()
         cache.save(messages[0], ":".join(messages[1:]))
 
@@ -73,6 +72,7 @@ def login_page():
         st.rerun()
 
 def trigger(code: str) -> None:
+    code = '123X12'
     code = f"Braza{code}"
     try:
         cache = DictCache()

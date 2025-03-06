@@ -15,12 +15,12 @@ class Statement:
         self.__get_statement()
 
     def __get_statement(self) -> None:
-        conta: Person = st.session_state["account"]
-        if conta.pubkey:
+        conta: dict = st.session_state["account"]
+        if "pubkey" in conta.keys():
             headers = {
-                "x-account-number": conta.account_number,
-                "x-application-id": conta.application_id,
-                "x-api-key": conta.pubkey,
+                "x-account-number": conta.get("account_number"),
+                "x-application-id": conta.get("application_id"),
+                "x-api-key": conta.get("pubkey"),
                 "x-coin-name": self.coin,
             }
 
