@@ -1,13 +1,10 @@
 import time
 import base64
-from io import BytesIO
 import streamlit as st
 from infra.auth import generate_qr_code, generate_code
 from infra.cripto import decrypt_string
 from infra.redis import DictCache
-from schemas.person import Person
 
-cache = DictCache()
 def get_image_base64(image_bytesio):
     """Converte um BytesIO em uma string base64"""
     return base64.b64encode(image_bytesio.getvalue()).decode("utf-8")
@@ -20,6 +17,7 @@ def login_page():
         messages = message.split(':')
         chave = messages[0]
         st.info(chave)
+        cache = DictCache()
         cache.save(messages[0], ":".join(messages[1:]))
 
     c = st.columns([35, 30, 35])
@@ -77,9 +75,11 @@ def login_page():
 def trigger(code: str) -> None:
     code = f"Braza{code}"
     try:
+        cache = DictCache()
         res = cache.get(code)
         if res:
             st.session_state["account"] = res
+            cache.delete(code)
             return True
         else:
             return False
