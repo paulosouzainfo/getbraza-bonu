@@ -13,7 +13,7 @@ def login_page():
     code = st.query_params.get("code", None)
     message = st.query_params.get("message", None)
     if code and message:
-        message = decrypt_string(encrypted_text=message, key_md5=code)
+        message = decrypt_string(encrypted_text=message, key=code)
         messages = message.split(':')
         chave = messages[0]
         cache = DictCache()
