@@ -69,7 +69,7 @@ def trigger(code: str) -> None:
         res = requests.get(f'{config.BUSINESS_ENDPOINT}/{code}')
         if res.status_code == 200:
             res = res.json()
-            message = decrypt_string(encrypted_text=res.get(message), key=res.get(code))
+            message = decrypt_string(encrypted_text=res.get(message), key=code)
             values = message.split(':')
             dicio = {
                 'installation_id': values[0],
