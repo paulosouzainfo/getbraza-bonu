@@ -1,8 +1,10 @@
 import time
+import requests
 import base64
 import streamlit as st
 from infra.auth import generate_qr_code, generate_code
-from infra.redis import DictCache
+from infra.cripto import decrypt_string
+from infra.config import Config as config
 
 def get_image_base64(image_bytesio):
     """Converte um BytesIO em uma string base64"""
@@ -63,13 +65,21 @@ def login_page():
 
 def trigger(code: str) -> None:
     code = code.split(':')[1]
-    code = 'BO00Q9'
     try:
-        cache = DictCache()
-        res = cache.get(code)
-        if res:
-            st.session_state["account"] = res
-            cache.delete(code)
+        res = requests.get(f'{config.BUSINESS_ENDPOINT}/{code}')
+        if res.status_code == 200:
+            res = res.json()
+            message = decrypt_string(encrypted_text=res.get(message), key=res.get(code))
+            values = message.split(':')
+            dicio = {
+                'installation_id': values[0],
+                'account_number': values[1],
+                'pubkey': values[2],
+                'certified_account': values[3].lower() == "true",
+                'qr_code_id': values[4],
+                'qr_code_content': values[5]
+            }
+            st.session_state["account"] = dicio
             return True
         else:
             return False

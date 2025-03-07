@@ -10,6 +10,7 @@ class Config:
     STATEMENT_ENDPOINT = getenv("STATEMENT_ENDPOINT")
     COINS_ENDPOINT = getenv("COINS_ENDPOINT")
     PRIVATE_KEY = getenv("PRIVATE_KEY")
+    BUSINESS_ENDPOINT = getenv("BUSINESS_ENDPOINT")
 
     @staticmethod
     def initial_config():
